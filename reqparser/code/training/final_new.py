@@ -1,57 +1,75 @@
 import openpyxl
 import xml.etree.ElementTree as ET
 import json
+from typing import List
 
-filename = 'config.json'
-with open(filename) as f:
-    pop_data = json.load(f)
-    print(pop_data)
-for pop_dict in pop_data:
-    path_name = pop_dict['Excel File']
-    sheet_name = pop_dict['Excel Sheet']
-    xml_sheet = pop_dict['XML File']
-    print(path_name + '\n' + sheet_name)
 
-wb = openpyxl.load_workbook(path_name)
-sheet = wb[sheet_name]
+def get_excel_file_path() -> str:
+    excel_filename = 'config.json'
+    with open(excel_filename) as ex_f:
+        pop_data = json.load(ex_f)
+        for pop_dict in pop_data:
+            path_name = pop_dict['Excel File']
+            print(path_name)
+            return path_name
+
+
+def get_excel_sheet_name() -> str:
+    excel_filename = 'config.json'
+    with open(excel_filename) as ex_f:
+        pop_data = json.load(ex_f)
+        for pop_dict in pop_data:
+            sheet_name = pop_dict['Excel Sheet']
+            print(sheet_name)
+            return sheet_name
+
+
+def paths_to_xml_file() -> List[str]:
+    xml_filename = 'xml_config.json'
+    xml_path_str = []
+    with open(xml_filename) as ex_f:
+        pop_p_data = json.load(ex_f)
+        for key, value in pop_p_data.items():
+            xml_path_str.append(value)
+    return xml_path_str
+
+
+def parse_xml() -> str:
+    ttt = paths_to_xml_file()
+    idents = []
+    descs = []
+    for xml_file in ttt:
+        tree = ET.ElementTree(file=xml_file)
+        root = tree.getroot()
+
+        idents += [el.text for el in root.iterfind('.//testcase/ident')]
+        descs += [el.text for el in root.iterfind('.//testcase/description')]
+
+    d = {id_: req for id_, req in zip(idents, descs)}
+
+    return d
+
+
+def find_trace(trace: str) -> List[str]:
+    l = []
+    d = parse_xml()
+    for k, v in d.items():
+        if trace in v:
+            l.append(k)
+    return l
+
+
+wb = openpyxl.load_workbook(get_excel_file_path())
+sheet = wb[get_excel_sheet_name()]
 excel_req_info = []  # [ (row_nr, req), (row_nr, req), .. ]
 
-#here you iterate over the rows in the specific column
-for row in range(9, sheet.max_row+1):
-    for column in "A":  #Here you can add or reduce the columns
+# here you iterate over the rows in the specific column
+for row in range(9, sheet.max_row + 1):
+    for column in "A":  # Here you can add or reduce the columns
         cell_name = "{}{}".format(column, row)
         excel_req_info.append(
             (row, sheet[cell_name].value)
         )
-
-def xml_path():
-    filename = 'xml_config.json'
-    with open(filename) as f:
-        pop_data = json.load(f)
-        print(pop_data)
-        for key, v in pop_data.items():
-            xml_path_str = []
-            xml_path_str = xml_path_str.append(v)
-            print(xml_path_str)
-
-tree = ET.ElementTree(file=xml_sheet)
-root = tree.getroot()
-
-idents = [el.text for el in root.iterfind('.//testcase/ident')]
-descs = [el.text for el in root.iterfind('.//testcase/description')]
-
-d = {id_: desc for id_, desc in zip(idents, descs)}
-
-print(d)
-from typing import List
-
-def find_trace(trace: str) -> List[str]:
-    l = []
-    for k, v in d.items():
-        if trace in v:
-            l.append(k)
-            print(l)
-    return l
 
 for row_nr, req in excel_req_info:
     trace_id = find_trace(req)

@@ -1,6 +1,6 @@
 {
-	"XML File path 1": "C:/Project/Python/ReqParser/Temp/the_latest/Eng8_SW_Tests.xml",
-	"XML File path 2": "C:/Project/Python/ReqParser/Temp/the_latest/Volvo_Smoke_Test_Audio_Functions_report.xml",
-	"XML File path 3": "C:/Project/Python/ReqParser/Temp/the_latest/Volvo_Smoke_Test_Diagnostic_report.xml",
-	"XML File path 4": "C:/Project/Python/ReqParser/Temp/the_latest/Volvo_Smoke_Test_MOST_report.xml"
+	"XML File path 1": "C:/Project/Python/ReqParser/Reports/new_reports/Eng8_SW_Tests.xml",
+	"XML File path 2": "C:/Project/Python/ReqParser/Reports/new_reports/Volvo_Smoke_Test_Audio_Functions_report.xml",
+	"XML File path 3": "C:/Project/Python/ReqParser/Reports/new_reports/Volvo_Smoke_Test_Diagnostic_report.xml",
+	"XML File path 4": "C:/Project/Python/ReqParser/Reports/new_reports/Volvo_Smoke_Test_MOST_report.xml"
 }
